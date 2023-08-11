@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package server;
 
-option go_package = "./grpc-server";
+option go_package = "./api";
 // Interface exported by the server.
 service StringFunction {
   rpc Reverse(RequestMessage) returns (ResponseMessage) {}
@@ -15,7 +15,7 @@ message RequestMessage {
   string message = 1;
 }
 
-// Message
+// Messageo
 message ResponseMessage {
   string message = 1;
   int64 charCount = 2 ;

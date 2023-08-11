@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"google.golang.org/grpc"
-	grpcserver "grpc-server/protobuf"
+	api "grpc-server/api"
 	"grpc-server/utilities"
 	"io"
 	"log"
@@ -21,16 +21,16 @@ var (
 
 // server is used to implement
 type server struct {
-	grpcserver.UnimplementedStringFunctionServer
+	api.UnimplementedStringFunctionServer
 	mu sync.Mutex // protects routeNotes
 }
 
 // Reverse implements grpc_server.Reverse
-func (s *server) Reverse(_ context.Context, in *grpcserver.RequestMessage) (*grpcserver.ResponseMessage, error) {
+func (s *server) Reverse(_ context.Context, in *api.RequestMessage) (*api.ResponseMessage, error) {
 	log.Printf("Received: %v", in.GetMessage())
-	return &grpcserver.ResponseMessage{Message: utilities.Reverse(in.GetMessage()), CharCount: int64(len(in.GetMessage()))}, nil
+	return &api.ResponseMessage{Message: utilities.Reverse(in.GetMessage()), CharCount: int64(len(in.GetMessage()))}, nil
 }
-func (s *server) BidiEcho(stream grpcserver.StringFunction_BidiEchoServer) error {
+func (s *server) BidiEcho(stream api.StringFunction_BidiEchoServer) error {
 	var count int64 = 0
 	var sb strings.Builder
 	for {
@@ -45,7 +45,7 @@ func (s *server) BidiEcho(stream grpcserver.StringFunction_BidiEchoServer) error
 		sb.WriteString(in.GetMessage())
 		count++
 		s.mu.Unlock()
-		if err := stream.Send(&grpcserver.ResponseMessage{Message: sb.String(), CharCount: count}); err != nil {
+		if err := stream.Send(&api.ResponseMessage{Message: sb.String(), CharCount: count}); err != nil {
 			return err
 		}
 
@@ -59,7 +59,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	grpcserver.RegisterStringFunctionServer(s, &server{})
+	api.RegisterStringFunctionServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

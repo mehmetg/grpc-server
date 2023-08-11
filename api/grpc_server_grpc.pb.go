@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.20.3
-// source: protobuf/server.proto
+// source: grpc_server.proto
 
-package grpc_server
+package api
 
 import (
 	context "context"
@@ -175,5 +175,5 @@ var StringFunction_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "protobuf/server.proto",
+	Metadata: "grpc_server.proto",
 }
