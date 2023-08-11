@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package server;
+
+option go_package = "./grpc-server";
+// Interface exported by the server.
+service StringFunction {
+  rpc Reverse(RequestMessage) returns (ResponseMessage) {}
+  rpc BidiEcho(stream RequestMessage) returns (stream ResponseMessage) {}
+
+}
+
+// Message
+message RequestMessage {
+  string message = 1;
+}
+
+// Message
+message ResponseMessage {
+  string message = 1;
+  int64 charCount = 2 ;
+}
